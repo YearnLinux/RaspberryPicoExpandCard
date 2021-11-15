@@ -1,39 +1,94 @@
-# PicoExpandCard
+# RaspberryPicoExpandCard
+
+#### LICENSE
+* 本项目使用 MIT 授权协议
 
 #### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+Raspberry Pi Pico 扩展板，基于JSON数据结构，构建简单可快速扩展的通信控制协议。
 
-#### 软件架构
-软件架构说明
+某宝搜索 树莓派PICO 可以搜索到很多这个板子, 买到板子后烧录这个代码到板子里面即可
 
+#### 引脚编号
+* 计数器 : GPIO2:2,GPIO2:3,GPIO2:4,GPIO2:5
+* ADC引脚 : GPIO26:0/26,GPIO27:1/27,GPIO28:2/28
+* PWM脉冲/数字引脚 : GPIO2:2,GPIO3:3,GPIO4:4,GPIO5:5,GPIO6:6,GPIO7:7,GPIO8:8,GPIO9:9,GPIO10:10,GPIO11:11,GPIO12:12,GPIO13:13,GPIO14:14,GPIO15:15,GPIO16:16,GPIO17:17,GPIO18:18,GPIO19:19,GPIO20:20,GPIO21:21,GPIO22:22,GPIO23:23,GPIO24:24,GPIO25:25,GPIO26:26,GPIO27:27,GPIO28:28
 
-#### 安装教程
+#### 板卡通信控制协议操作类型
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+* type/操作类型, 支持参数
+1) IO-SET
+2) PIN-READ
+3) CARD-INFO
+4) DIGIT-WRITE
+5) DIGIT-READ
+6) PWM-WRITE
+7) ADC-READ
+8) ADC-TEMPERATURE
+9) COUNTER-READ
+10) COUNTER-CLOSE
 
-#### 使用说明
+#### 设置引脚模式
+* 参数一 : channel/引脚编号
+* 参数二 : mode/工作模式, 支持参数(digit/adc/pwm/counter)
+* 参数三 : work/引脚模式, 仅在工作模式为(digit)时生效 (DEFAULT/INPUT/OUTPUT)
+* 参数四 : pull/上拉下拉电阻, 仅在工作模式为(digit/counter)时生效 (DEFAULT/PULL_UP/PULL_DOWN)
+* 参数五 : freq/输出频率, 仅在工作模式为(pwm)时生效, 请直接输入频率值, 默认频率 1000hz
+```
+{"type":"IO-SET","channel":0,"mode":"adc"}
+{"type":"IO-SET","channel":2,"mode":"counter","pull":"PULL_UP"}
+{"type":"IO-SET","channel":3,"mode":"digit","work":"INPUT","pull":"PULL_UP"}
+{"type":"IO-SET","channel":4,"mode":"digit","work":"OUTPUT","pull":"DEFAULT"}
+{"type":"IO-SET","channel":5,"mode":"pwm","freq":1000}
+```
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+#### 设置引脚数字信号状态
+* 参数一 : channel/引脚编号
+* 参数二 : signal/工作模式 , 支持参数(LOW/HIGH)
+1) LOW 设置引脚输出低电平状态 
+2) HIGH 设置引脚输出高电平状态 
+```
+{"type":"DIGIT-WRITE","channel":4,"signal":"LOW"}
+{"type":"DIGIT-WRITE","channel":4,"signal":"HIGH"}
+```
 
-#### 参与贡献
+#### 读取引脚数字信号状态
+* 参数一 : channel/引脚编号
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+`{"type":"DIGIT-READ","channel":3}`
 
+#### 读取计数器，每次读取后计数器会清理零
+* 参数一 : channel/引脚编号(支持引脚: 2,3,4,5)
 
-#### 特技
+`{"type":"COUNTER-READ","channel":2}`
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+#### 关闭计数器
+* 参数一 : channel/引脚编号(支持引脚: 2,3,4,5)
+
+`{"type":"COUNTER-CLOSE","channel":2}`
+
+#### 重启板卡
+
+`{"type":"REBOOT"}`
+
+#### 输出PWM信号
+* 参数一 : channel/引脚编号
+* 参数二 : value / 0-65535 范围的数值
+
+`{"type":"PWM-WRITE","channel":5,"value":65535}`
+
+#### 读取模拟信号
+* 参数一 : channel/引脚编号
+
+` {"type":"ADC-READ","channel":0}`
+
+#### 读取板载温度传感器温度
+
+` {"type":"ADC-TEMPERATURE"}`
+
+#### 读取可用引脚信息
+
+`{"type":"PIN-READ"}`
+
+#### 读取板卡信息, 版本号, 板卡名称
+
+`{"type":"CARD-INFO"}`
