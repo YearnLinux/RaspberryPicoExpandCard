@@ -5,8 +5,16 @@
 
 #### 介绍
 Raspberry Pi Pico 扩展板，基于JSON数据结构，构建简单可快速扩展的通信控制协议。
+某宝搜索 树莓派PICO 可以搜索到很多这个板子, 买到板子后烧录这个代码到板子里面即可。
+作者使用的IDE是 VSCODE 里面安装了 RT-Thread MicoPython 插件，具体百度使用教程。
+烧录代码后如果要Pico启动就立即执行代码，则需要把文件命名为 main.py 即可
+MicoPython SDK DOC : https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-python-sdk.pdf
 
-某宝搜索 树莓派PICO 可以搜索到很多这个板子, 买到板子后烧录这个代码到板子里面即可
+#### MicoPython UF2
+本项目基于 MicoPython 编写，请到树莓派官网下载 UF2 文件，拷贝到Pico大容量存储器内
+MicoPython UF2 : https://www.raspberrypi.com/documentation/microcontrollers/micropython.html
+重置设备时 UF2 : https://www.raspberrypi.com/documentation/microcontrollers/raspberry-pi-pico.html#resetting-flash-memory
+注意：如果烧录了运行时的代码，导致代码一直运行就无法再次烧录，此时需要重新烧录需要切换到大容量存储器模式把重置设备的UF2文件拷贝进去重启PICO后再次拷贝MicoPython UF2文件后再次重新烧录Python代码即可
 
 #### 引脚编号
 * 计数器 : GPIO2:2,GPIO2:3,GPIO2:4,GPIO2:5
